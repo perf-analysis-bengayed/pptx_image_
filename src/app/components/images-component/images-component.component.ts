@@ -30,17 +30,17 @@ export class ImagesComponentComponent {
     }
   }
 
-  uploadFile() {
-    if (!this.selectedFile) {
-      alert('Please select a file first.');
-      return;
-    }
+  // uploadFile() {
+  //   if (!this.selectedFile) {
+  //     alert('Please select a file first.');
+  //     return;
+  //   }
 
-    this.pptx2imgService.uploadFile(this.selectedFile).subscribe({
-      next: (response) => console.log('Upload successful:', response),
-      error: (error) => console.error('Upload failed:', error)
-    });
-  }
+  //   this.pptx2imgService.uploadFile(this.selectedFile).subscribe({
+  //     next: (response) => console.log('Upload successful:', response),
+  //     error: (error) => console.error('Upload failed:', error)
+  //   });
+  // }
 
 
 
@@ -87,30 +87,30 @@ export class ImagesComponentComponent {
   //   });
   // }
   
-  convertFile() {
-    if (!this.selectedFile) {
-      alert('Please select a file first.');
-      return;
-    }
+  // convertFile() {
+  //   if (!this.selectedFile) {
+  //     alert('Please select a file first.');
+  //     return;
+  //   }
 
-    this.pptx2imgService.convertFile22(this.selectedFile, "png").subscribe({
-      next: async (response) => {
-        const zip = new JSZip();
-        const zipContent = await zip.loadAsync(response);
+  //   this.pptx2imgService.convertFile22(this.selectedFile, "png").subscribe({
+  //     next: async (response) => {
+  //       const zip = new JSZip();
+  //       const zipContent = await zip.loadAsync(response);
 
-        this.imageUrls = [];
+  //       this.imageUrls = [];
 
-        Object.keys(zipContent.files).forEach(async (fileName) => {
-          if (fileName.endsWith('.png') || fileName.endsWith('.jpg')) {
-            const fileData = await zipContent.files[fileName].async('blob');
-            const imageUrl = URL.createObjectURL(fileData);
-            this.imageUrls.push(imageUrl);
-          }
-        });
-      },
-      error: (error) => console.error('Convert failed:', error)
-    });
-  }
+  //       Object.keys(zipContent.files).forEach(async (fileName) => {
+  //         if (fileName.endsWith('.png') || fileName.endsWith('.jpg')) {
+  //           const fileData = await zipContent.files[fileName].async('blob');
+  //           const imageUrl = URL.createObjectURL(fileData);
+  //           this.imageUrls.push(imageUrl);
+  //         }
+  //       });
+  //     },
+  //     error: (error) => console.error('Convert failed:', error)
+  //   });
+  // }
 
   uploadtest(): void {
     if (!this.selectedFile) {
