@@ -4,7 +4,7 @@
 <div class="container">
 <div class="slider">
 <div class="image-grid" [style.gridTemplateColumns]="'repeat(auto-fill, minmax(' + imageSize + 'px, 1fr))'">
-  <div class="image-item" *ngFor="let image of images; trackBy: trackByFn">
+  <div class="image-item" *ngFor="let image of images; ">
     <input type="checkbox" [checked]="selectedImages.has(image)" (change)="toggleSelection(image)">
 
     <img [src]="image.src" [style.width.px]="imageSize" [style.height.px]="imageSize*0.7"/>
@@ -12,6 +12,31 @@
   </div>
 </div>
 </div>
+<h2>Convertisseur de fichiers</h2>
+<div>
+  <input type="file" (change)="onFileSelected($event)" />
+</div>
+<div>
+  <label for="format">Format de l'image :</label>
+  <select id="format" [(ngModel)]="selectedZipFormat">
+    <option value="png">PNG</option>
+    <option value="jpeg">JPEG</option>
+  </select>
+</div>
+<div>
+  <button (click)="uploadtest()">Convertir</button>
+</div>
+
+<div *ngIf="imageUrls.length > 0">
+  <h3>Extracted Images:</h3>
+  <div *ngFor="let imageUrl of imageUrls">
+    <img [src]="imageUrl" alt="Converted Image" width="200">
+  </div>
+</div>
+<div>
+
+
+
 <div class="controls">
   <div class="name-control">
     <label for="Libelle" >Libelle :</label>

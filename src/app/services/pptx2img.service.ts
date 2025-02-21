@@ -7,7 +7,8 @@ import { Observable } from 'rxjs';
 })
 export class Pptx2imgService {
   private apiUrl='http://localhost:3001/api/files/';
-
+  private apiUrlConvert = 'http://127.0.0.1:3001/api/files/converttest';
+  
   constructor(private http: HttpClient) { }
   uploadFile(file: File): Observable<any> {
     const formData = new FormData();
@@ -39,4 +40,29 @@ export class Pptx2imgService {
     // Laissez le navigateur définir automatiquement l'en-tête Content-Type
     return this.http.post(this.apiUrl + 'convert', formData);
   }
+
+  
+  convertFile22(file: File, fileFormat: string): Observable<Blob> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileFormat', fileFormat);
+
+    return this.http.post(this.apiUrlConvert, formData, { responseType: 'blob' });
+  }
+
+  convertFiletest(formData: FormData): Observable<Blob> {
+    return this.http.post(this.apiUrlConvert, formData, { responseType: 'blob' });
+  }
+
+
+  convertFilepng(file: File, fileFormat: string, zipFormat: string): Observable<Blob> {
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('fileFormat', fileFormat);
+    formData.append('zipFormat', zipFormat); // Add zipFormat to the form data
+  
+    return this.http.post(this.apiUrlConvert, formData, { responseType: 'blob' });
+  }
+  
+
 }

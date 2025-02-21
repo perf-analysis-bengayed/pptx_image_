@@ -15,6 +15,8 @@ import JSZip from 'jszip';
 })
 export class ImagesComponentComponent {
   selectedFile: File | null = null;
+  imageUrls: string[] = [];
+  selectedZipFormat: string = 'png'; // Default format
 
   images: ImageItem[] = Array.from({ length: 10 }, (_, i) => ({
     src: 'assets/placeholder.png',
@@ -61,53 +63,93 @@ export class ImagesComponentComponent {
   //     error: (error) => console.error('convert failed:', error)
   //   });
   // }
-  convertFile(): void {
+
+  // convertFile22() {
+  //   if (!this.selectedFile) {
+  //     alert('Please select a file first.');
+  //     return;
+  //   }
+  
+  //   this.pptx2imgService.convertFile22(this.selectedFile, "png").subscribe({
+  //     next: (response) => {
+  //       const blob = new Blob([response], { type: 'application/zip' });
+  //       const url = window.URL.createObjectURL(blob);
+  //       const a = document.createElement('a');
+  //       a.href = url;
+  //       a.download = `${this.selectedFile?.name.split('.')[0]}.zip`;
+  //       document.body.appendChild(a);
+  //       a.click();
+  //       window.URL.revokeObjectURL(url);
+  //       document.body.removeChild(a);
+  //       console.log('Convert successful');
+  //     },
+  //     error: (error) => console.error('Convert failed:', error)
+  //   });
+  // }
+  
+  convertFile() {
     if (!this.selectedFile) {
-      alert('Veuillez sélectionner un fichier d\'abord.');
+      alert('Please select a file first.');
       return;
     }
-  
-    this.pptx2imgService.uploadFile(this.selectedFile).subscribe({
-      next: () => {
-        if (this.selectedFile !== null) {
-          this.pptx2imgService.convertFile(this.selectedFile.name, 'png').subscribe({
-            next: async (response) => {
-              await this.extractFiles(response);
-              console.log('Conversion réussie');
-            },
-            error: (error) => console.error('Échec de la conversion :', error)
-          });
-        } else {
-          // Gérez le cas où selectedFile est null
-          console.error('Le fichier sélectionné est null.');
-        }
-      },
-      error: (error) => console.error('Échec du téléchargement :', error)
-    });
-  }
-  
 
-  // Méthode pour extraire les fichiers du blob
-  private async extractFiles(blob: Blob): Promise<void> {
-    const zip = new JSZip();
-    const unzipped = await zip.loadAsync(blob);
+    this.pptx2imgService.convertFile22(this.selectedFile, "png").subscribe({
+      next: async (response) => {
+        const zip = new JSZip();
+        const zipContent = await zip.loadAsync(response);
 
-    this.images = []; // Réinitialiser les images précédentes
-    const imagePromises: Promise<{ src: string, name: string }>[] = [];
+        this.imageUrls = [];
 
-    unzipped.forEach((relativePath, file) => {
-      if (file.name.endsWith('.jpg') || file.name.endsWith('.png')) {
-        const imagePromise = file.async('blob').then(content => {
-          const objectURL = URL.createObjectURL(content);
-          return { src: objectURL, name: file.name };
+        Object.keys(zipContent.files).forEach(async (fileName) => {
+          if (fileName.endsWith('.png') || fileName.endsWith('.jpg')) {
+            const fileData = await zipContent.files[fileName].async('blob');
+            const imageUrl = URL.createObjectURL(fileData);
+            this.imageUrls.push(imageUrl);
+          }
         });
-        imagePromises.push(imagePromise);
-      }
+      },
+      error: (error) => console.error('Convert failed:', error)
     });
-
-    const extractedImages = await Promise.all(imagePromises);
-    this.images = extractedImages.sort((a, b) => a.name.localeCompare(b.name));
   }
+
+  uploadtest(): void {
+    if (!this.selectedFile) {
+      alert('Veuillez sélectionner un fichier.');
+      return;
+    }
+
+    const formData = new FormData();
+    formData.append('file', this.selectedFile);
+    formData.append('fileFormat', this.selectedZipFormat);
+
+    this.pptx2imgService.convertFiletest(formData).subscribe({
+      next: async (blob: Blob) => {
+        const downloadUrl = window.URL.createObjectURL(blob);
+        const link = document.createElement('a');
+        link.href = downloadUrl;
+        // Générer un nom de fichier ZIP à partir du nom d'origine sans extension
+        link.download = `${this.selectedFile!.name.split('.')[0]}.zip`;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        window.URL.revokeObjectURL(downloadUrl);
+
+        const zip = new JSZip();
+        const zipContent = await zip.loadAsync(blob);
+        this.imageUrls = [];
+
+        Object.keys(zipContent.files).forEach(async (fileName) => {
+          if (fileName.endsWith('.png') || fileName.endsWith('.jpg')) {
+            const fileData = await zipContent.files[fileName].async('blob');
+            const imageUrl = URL.createObjectURL(fileData);
+            this.imageUrls.push(imageUrl);
+          }
+        });
+      },
+      error: (error) => console.error('Convert failed:', error)
+    });
+  }
+
 
 
 
