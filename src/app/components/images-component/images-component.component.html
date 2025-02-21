@@ -1,0 +1,50 @@
+<input type="file" (change)="onFileSelected($event)" accept=".ppt,.pptx" />
+<button (click)="uploadFile()">Upload</button>
+<button (click)="convertFile()">convert</button>
+<div class="container">
+<div class="slider">
+<div class="image-grid" [style.gridTemplateColumns]="'repeat(auto-fill, minmax(' + imageSize + 'px, 1fr))'">
+  <div class="image-item" *ngFor="let image of images; trackBy: trackByFn">
+    <input type="checkbox" [checked]="selectedImages.has(image)" (change)="toggleSelection(image)">
+
+    <img [src]="image.src" [style.width.px]="imageSize" [style.height.px]="imageSize*0.7"/>
+
+  </div>
+</div>
+</div>
+<div class="controls">
+  <div class="name-control">
+    <label for="Libelle" >Libelle :</label>
+    <input id="Libelle" type="text" class="libelle" >
+  </div>
+  <div class="period-control">
+    <label for="period">Durée par défaut :</label>
+    <input id="period" type="number" min="1" [(ngModel)]="displayPeriod">
+  </div>
+  <div class="info">
+    <p>Diapositives : {{ selectedImages.size }} / {{ images.length }}</p>
+  </div>
+  <button (click)="selectAll()" class="icon-btn">
+    <span ><img class="btn-icon" src="assets/selected_icon.svg"/></span>
+  </button>
+  <div class="size-controller">
+    <p >-</p>
+    <input id="sizeSlider" type="range" min="150" max="350" step="50" [(ngModel)]="imageSize" class="custom-slider">
+    <p >+</p>
+    <p class="slider-label">{{ imageSizeLabel }}</p>
+  </div>
+
+
+  <div class="button-group">
+
+
+    <button (click)="undo()" class="icon-btn">
+      <span ><img class="btn-icon" src="assets/undo_icon.svg"/></span>
+    </button>
+    <button  class="icon-btn" (click)="confirm()">
+      <span ><img class="btn-icon" src="assets/confirm_icon.svg"/></span>
+    </button>
+  </div>
+</div>
+</div>
+
