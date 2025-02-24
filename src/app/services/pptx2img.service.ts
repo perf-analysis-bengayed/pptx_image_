@@ -6,9 +6,7 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class Pptx2imgService {
-  private apiUrl='http://localhost:3001/api/files/';
-  private apiUrlConvert = 'http://127.0.0.1:3001/api/files/converttest';
-  
+  private apiUrlConvert = '/api/files/converttest';
   constructor(private http: HttpClient) { }
   // uploadFile(file: File): Observable<any> {
   //   const formData = new FormData();

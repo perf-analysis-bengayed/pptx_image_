@@ -60,6 +60,9 @@
         },
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
+          "options": {
+            "proxyConfig": "proxy.conf.json"  
+          },
           "configurations": {
             "production": {
               "buildTarget": "pptx_image_:build:production"
@@ -78,6 +81,7 @@
         },
         "test": {
           "builder": "@angular-devkit/build-angular:karma",
+          
           "options": {
             "polyfills": [
               "zone.js",
